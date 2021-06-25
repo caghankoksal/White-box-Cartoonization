@@ -1,7 +1,22 @@
+
+
+# Running on Cluster
+
+- Create Conda Environment
+ * conda create --name cartoonize
+ * source activate cartoonize
+- Install Necessary Packages
+ * conda install tensorflow=1.12.0
+ * conda install tensorflow-gpu=1.12.0
+ * pip install scikit-image==0.14.5
+ * pip install tqdm
+ * opencv-python==4.5.1.48
+
+
+
+
+<br><br><br><br><br><br>
 <img src='paper/shinjuku.jpg' align="left" width=1000>
-
-<br><br><br>
-
 # [CVPR2020]Learning to Cartoonize Using White-box Cartoon Representations
 [project page](https://systemerrorwang.github.io/White-box-Cartoonization/) |   [paper](https://github.com/SystemErrorWang/White-box-Cartoonization/blob/master/paper/06791.pdf) |   [twitter](https://twitter.com/IlIIlIIIllIllII/status/1243108510423896065) |   [zhihu](https://zhuanlan.zhihu.com/p/117422157) |   [bilibili](https://www.bilibili.com/video/av56708333) |  [facial model](https://github.com/SystemErrorWang/FacialCartoonization)
 
