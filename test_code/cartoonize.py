@@ -10,6 +10,8 @@ from tqdm import tqdm
 
 def resize_crop(image):
     h, w, c = np.shape(image)
+    #print("Input shape",np.shape(image))
+    """
     if min(h, w) > 720:
         if h > w:
             h, w = int(720*h/w), 720
@@ -17,12 +19,15 @@ def resize_crop(image):
             h, w = 720, int(720*w/h)
     image = cv2.resize(image, (w, h),
                        interpolation=cv2.INTER_AREA)
+                       
+    """
     h, w = (h//8)*8, (w//8)*8
     image = image[:h, :w, :]
+    #print("Out shape",np.shape(image))
     return image
     
 
-def cartoonize(load_folder, save_folder, model_path):
+def cartoonize(file_path, save_folder, model_path):
     input_photo = tf.placeholder(tf.float32, [1, None, None, 3])
     network_out = network.unet_generator(input_photo)
     final_out = guided_filter.guided_filter(input_photo, network_out, r=1, eps=5e-3)
@@ -37,10 +42,17 @@ def cartoonize(load_folder, save_folder, model_path):
 
     sess.run(tf.global_variables_initializer())
     saver.restore(sess, tf.train.latest_checkpoint(model_path))
-    name_list = os.listdir(load_folder)
-    for name in tqdm(name_list):
+    
+    
+    with open(file_path,"r") as file:
+        annotation_paths = file.readlines()
+        
+    annotation_paths = [ each.replace("\n","") for each in annotation_paths]
+    
+    for path in tqdm(annotation_paths):
         try:
-            load_path = os.path.join(load_folder, name)
+            load_path = path
+            name = load_path.split("/")[-1]
             save_path = os.path.join(save_folder, name)
             image = cv2.imread(load_path)
             image = resize_crop(image)
@@ -58,11 +70,20 @@ def cartoonize(load_folder, save_folder, model_path):
 
 if __name__ == '__main__':
     model_path = 'saved_models'
-    load_folder = 'test_images'
-    save_folder = 'cartoonized_images'
+    
+    USER = "all"   #  USER="baris" OR USER="gürkan"
+    
+    
+    file_path = f"file_paths/COCO_{USER}.txt"
+    
+    
+    save_folder = os.getcwd() + f'/cartoonized_images_{USER}'
+    
+    print(f"Current User  {USER}")
     if not os.path.exists(save_folder):
+        print("Save Folder is created")
         os.mkdir(save_folder)
-    cartoonize(load_folder, save_folder, model_path)
+    cartoonize(file_path, save_folder, model_path)
     
 
     
